@@ -10,13 +10,11 @@ if (!DB_HOST || !PORT) {
   throw new Error('Missing environment variable.');
 }
 
-console.log(DB_HOST);
-
 mongoose
   .connect(DB_HOST)
   .then(() => {
     app.listen(PORT, () => {
-      console.log('Server running. Use our API on port: 3000');
+      console.log(`Server running. Use our API on port: ${PORT}`);
       console.log('Database connection successful');
     });
   })

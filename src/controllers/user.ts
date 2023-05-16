@@ -72,15 +72,15 @@ export const verifyEmail = async (req: Request, res: Response): Promise<Response
       res.cookie('accessToken', accessToken, {
         maxAge: 900000,
         httpOnly: true,
-        domain: '.e-shop-next-drab.vercel.app',
       });
       res.cookie('refreshToken', refreshToken, {
         maxAge: 900000,
         httpOnly: true,
-        domain: process.env.FRONTEND_URL,
       });
+      // res.setHeader('Set-Cookie', [`accessToken=${accessToken}; Max-Age=900000; HttpOnly; SameSite=None;`]);
 
       res.redirect(`${process.env.FRONTEND_URL}`);
+      // res.redirect(`http://localhost:3000/`);
     } else {
       throw new Error('Tokens not found');
     }
