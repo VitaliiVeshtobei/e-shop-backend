@@ -12,8 +12,8 @@ if (key) {
 export const sendEmail = async (emailUser: string, verificationToken: string) => {
   const data = {
     to: emailUser,
-    subject: 'Подтверждение email',
-    html: `<a target="_blank" href="http://localhost:3000/user/verify/${verificationToken}">Подтвердить email</a>`,
+    subject: 'Підтвердження email',
+    html: `<a target="_blank" href="http://localhost:3000/user/verify/${verificationToken}">Підтвердити email</a>`,
   };
   const email = { ...data, from: 'veshtobey@gmail.com' };
   try {

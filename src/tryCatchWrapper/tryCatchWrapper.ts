@@ -1,3 +1,4 @@
+import { json } from 'stream/consumers';
 import { HttpError } from '../httpError/Error.js';
 import { Response, Request, NextFunction } from 'express';
 
@@ -8,7 +9,8 @@ export const tryCatchWrapper = (
     try {
       await endpointFn(req, res, next);
     } catch (error: any) {
-      throw new HttpError(error.code, error.message);
+      const statusCode = error.code || 500;
+      return res.status(statusCode).json(error.message);
     }
   };
 };

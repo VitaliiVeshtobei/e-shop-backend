@@ -2,6 +2,7 @@ import { User } from '../scheme/user.js';
 import { HttpError } from '../httpError/Error.js';
 import { tokensCreator } from '../utils/tokensCreator.js';
 import bcryptjs from 'bcryptjs';
+import { Types } from 'mongoose';
 
 interface iUser {
   name: string;
@@ -23,6 +24,60 @@ export const addUserService = async (data: iUser) => {
   }
 };
 
+export const loginUserService = async (email: string, password: string) => {
+  try {
+    const emailCheck = email.toLowerCase();
+    const user = await User.findOne({ email: emailCheck });
+
+    if (!user) {
+      throw new HttpError('Invalid email address or password', 400);
+    }
+
+    const isValidPass = await bcryptjs.compare(password, user.password);
+
+    if (!isValidPass) {
+      throw new HttpError('Invalid email address or password', 400);
+    }
+
+    const tokens = tokensCreator(user._id);
+
+    if (tokens) {
+      const { accessToken, refreshToken } = tokens;
+      const updatedUser = await User.findByIdAndUpdate(
+        user._id,
+        { accessToken, refreshToken },
+        {
+          new: true,
+          fields: '-password -createdAt -updatedAt -verificationToken ',
+        },
+      );
+      return updatedUser;
+    }
+  } catch (error: any) {
+    throw new HttpError(error.message, error.code);
+  }
+};
+
+export const logoutUserService = async (id: Types.ObjectId) => {
+  try {
+    await User.findByIdAndUpdate(id, { accessToken: null, refreshToken: null }, { new: true });
+  } catch (error: any) {
+    throw new HttpError(error.message, 404);
+  }
+};
+
+export const setVerifyTokenService = async (verificationToken: string, id: Types.ObjectId | undefined) => {
+  try {
+    if (id) {
+      await User.findByIdAndUpdate(id, { verificationToken });
+    } else {
+      throw new HttpError('no id', 400);
+    }
+  } catch (error: any) {
+    throw new HttpError(error.message, 400);
+  }
+};
+
 export const verifyUserEmailService = async (verificationToken: string) => {
   try {
     const user = await User.findOne({ verificationToken });
@@ -30,7 +85,6 @@ export const verifyUserEmailService = async (verificationToken: string) => {
     if (!user) {
       throw new HttpError('Not found', 404);
     }
-    // const { accessToken, refreshToken } = tokensCreator(user._id);
 
     const tokens = tokensCreator(user._id);
 
