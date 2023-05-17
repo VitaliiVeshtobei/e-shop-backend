@@ -13,7 +13,7 @@ if (!DB_HOST || !PORT) {
 mongoose
   .connect(DB_HOST)
   .then(() => {
-    app.listen(PORT, () => {
+    app.listen(PORT || 4444, () => {
       console.log(`Server running. Use our API on port: ${PORT}`);
       console.log('Database connection successful');
     });
