@@ -8,9 +8,9 @@ export const app = express();
 app.use(cors());
 
 app.use(express.json());
-app.use('/product', productRouter);
-app.use('/category', categoryRouter);
-app.use('/user', userRouter);
+app.use('/api/product', productRouter);
+app.use('/api/category', categoryRouter);
+app.use('/api/user', userRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found' });
