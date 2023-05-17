@@ -14,7 +14,7 @@ export const sendEmail = async (emailUser: string, verificationToken: string) =>
   const data = {
     to: emailUser,
     subject: 'Підтвердження email',
-    html: `<a target="_blank" href="${BACKEND_URL}/user/verify/${verificationToken}">Підтвердити email</a>`,
+    html: `<a target="_blank" href="${BACKEND_URL}/api/user/verify/${verificationToken}">Підтвердити email</a>`,
   };
   const email = { ...data, from: 'veshtobey@gmail.com' };
   try {
