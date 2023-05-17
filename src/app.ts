@@ -7,6 +7,14 @@ export const app = express();
 
 app.use(cors());
 
+app.get('/healthz', (req, res) => {
+  // Perform your health checks here
+  // For example, check database connectivity, external service availability, etc.
+
+  // If the checks pass, return a successful response
+  res.sendStatus(200);
+});
+
 app.use(express.json());
 app.use('/api/product', productRouter);
 app.use('/api/category', categoryRouter);
