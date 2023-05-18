@@ -69,19 +69,7 @@ export const verifyEmail = async (req: Request, res: Response): Promise<Response
     if (tokens) {
       const { accessToken, refreshToken } = tokens;
 
-      res.cookie('accessToken', accessToken, {
-        maxAge: 900000,
-        httpOnly: true,
-      });
-      res.cookie('refreshToken', refreshToken, {
-        maxAge: 900000,
-        httpOnly: true,
-      });
-      // res.setHeader('Set-Cookie', [`accessToken=${accessToken}; Max-Age=900000; HttpOnly; SameSite=None;`]);
-
-      // res.redirect(`${process.env.FRONTEND_URL}`);
-      res.redirect('https://e-shop-frontend-kndd.onrender.com/');
-      // res.redirect(`http://localhost:3000/`);
+      res.redirect(`${process.env.FRONTEND_URL}?accessToken=${accessToken}&refreshToken=${refreshToken}`);
     } else {
       throw new Error('Tokens not found');
     }
