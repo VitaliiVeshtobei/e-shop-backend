@@ -5,6 +5,7 @@ import {
   addUserService,
   loginUserService,
   logoutUserService,
+  refreshTokenService,
   setVerifyTokenService,
   verifyUserEmailService,
 } from '../services/user.js';
@@ -75,5 +76,22 @@ export const verifyEmail = async (req: Request, res: Response): Promise<Response
     }
   } catch (error: any) {
     return res.status(error.code || 500).json({ message: error.message });
+  }
+};
+
+export const refreshTokenController = async (req: Request, res: Response): Promise<Response> => {
+  const { refreshToken: receivedToken } = req.body;
+
+  try {
+    const tokens = await refreshTokenService(receivedToken);
+    if (tokens) {
+      const { accessToken, refreshToken } = tokens;
+
+      return res.status(201).json({ accessToken, refreshToken });
+    } else {
+      throw new HttpError('no tokens', 400);
+    }
+  } catch (error: any) {
+    return res.status(error.code).json({ message: error.message });
   }
 };

@@ -3,6 +3,9 @@ import { HttpError } from '../httpError/Error.js';
 import { tokensCreator } from '../utils/tokensCreator.js';
 import bcryptjs from 'bcryptjs';
 import { Types } from 'mongoose';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+
+const { REFRESH_SECRET } = process.env;
 
 interface iUser {
   name: string;
@@ -100,5 +103,29 @@ export const verifyUserEmailService = async (verificationToken: string) => {
     }
   } catch (error: any) {
     throw new HttpError(error.message, error.code);
+  }
+};
+
+export const refreshTokenService = async (verifiableToken: string) => {
+  try {
+    if (REFRESH_SECRET) {
+      const { id } = jwt.verify(verifiableToken, REFRESH_SECRET) as JwtPayload;
+      const checkTokenInDb = await User.findOne({
+        refreshToken: verifiableToken,
+      });
+
+      if (!checkTokenInDb) {
+        throw new HttpError('invalid token', 403);
+      }
+      const tokens = tokensCreator(id);
+      if (tokens) {
+        const { accessToken, refreshToken } = tokens;
+        await User.findByIdAndUpdate(id, { accessToken, refreshToken }, { new: true });
+
+        return { accessToken, refreshToken };
+      }
+    }
+  } catch (error: any) {
+    throw new HttpError(error.message, 403);
   }
 };
