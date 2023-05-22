@@ -11,12 +11,12 @@ import { getGoogleToken, getUserData } from '../services/google.js';
 // const { createLoginInfoMail } = require('../helpers/createMail');
 // const { sendMail } = require('../helpers/sendMail');
 
-const { BASE_URL, GOOGLE_CLIENT_ID, FRONTEND_URL } = process.env;
+const { BASE_URL, GOOGLE_CLIENT_ID, FRONTEND_URL, BACKEND_URL } = process.env;
 
 export const googleAuth = async (_: any, res: Response) => {
   const stringifiedParams = qs.stringify({
     client_id: GOOGLE_CLIENT_ID,
-    redirect_uri: `${BASE_URL}/api/auth/google-redirect`,
+    redirect_uri: `${BACKEND_URL}/api/auth/google-redirect`,
     scope: ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile'].join(
       ' ',
     ),

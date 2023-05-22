@@ -3,6 +3,7 @@ import { Document, Model, Types } from 'mongoose';
 import { User } from '../scheme/user.js';
 import {
   addUserService,
+  getUserService,
   loginUserService,
   logoutUserService,
   refreshTokenService,
@@ -40,7 +41,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
       await sendEmail(req.body.email, verificationToken);
       throw new HttpError(`Please confirm the mail ${userEmail}`, 400);
     }
-    return res.status(200).json({ user });
+    return res.status(200).json(user);
   } catch (error: any) {
     return res.status(error.code).json({ message: error.message });
   }
@@ -91,6 +92,16 @@ export const refreshTokenController = async (req: Request, res: Response): Promi
     } else {
       throw new HttpError('no tokens', 400);
     }
+  } catch (error: any) {
+    return res.status(error.code).json({ message: error.message });
+  }
+};
+
+export const getUser = async (req: RequestWithUser, res: Response): Promise<Response> => {
+  const { _id } = req.user as { _id: Types.ObjectId };
+  try {
+    const userInfo = await getUserService(_id);
+    return res.status(201).json(userInfo);
   } catch (error: any) {
     return res.status(error.code).json({ message: error.message });
   }

@@ -129,3 +129,15 @@ export const refreshTokenService = async (verifiableToken: string) => {
     throw new HttpError(error.message, 403);
   }
 };
+
+export const getUserService = async (id: Types.ObjectId) => {
+  try {
+    const user = await User.findById(id, '-password -createdAt -updatedAt');
+    if (!user?.accessToken) {
+      throw new HttpError('Invalid email address or password', 401);
+    }
+    return user;
+  } catch (error: any) {
+    throw new HttpError(error.message, error.code);
+  }
+};
