@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { HttpError } from '../httpError/Error.js';
 
-const { BASE_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = process.env;
+const { BACKEND_URL_DEV, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, BACKEND_URL_PROD } = process.env;
 
 export const getGoogleToken = async (code: string) => {
   return await axios({
@@ -10,7 +10,7 @@ export const getGoogleToken = async (code: string) => {
     data: {
       client_id: GOOGLE_CLIENT_ID,
       client_secret: GOOGLE_CLIENT_SECRET,
-      redirect_uri: `${BASE_URL}/api/auth/google-redirect`,
+      redirect_uri: `${BACKEND_URL_PROD}/api/auth/google-redirect`,
       grant_type: 'authorization_code',
       code,
     },
@@ -39,6 +39,7 @@ export const getUserData = async (accessGoogleToken: string): Promise<iUserData>
         Authorization: `Bearer ${accessGoogleToken}`,
       },
     });
+
     return data;
   } catch (error: any) {
     throw new HttpError('no userData', 400);
