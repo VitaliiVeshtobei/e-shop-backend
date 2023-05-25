@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { HttpError } from '../httpError/Error.js';
 
-const { BACKEND_URL_DEV, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, BACKEND_URL_PROD } = process.env;
+const { BACKEND_URL_DEV, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, BACKEND_URL_PROD, NODE_ENV } = process.env;
 
 export const getGoogleToken = async (code: string) => {
   return await axios({
@@ -10,7 +10,7 @@ export const getGoogleToken = async (code: string) => {
     data: {
       client_id: GOOGLE_CLIENT_ID,
       client_secret: GOOGLE_CLIENT_SECRET,
-      redirect_uri: `${BACKEND_URL_PROD}/api/auth/google-redirect`,
+      redirect_uri: `${NODE_ENV === 'development' ? BACKEND_URL_DEV : BACKEND_URL_PROD}/api/auth/google-redirect`,
       grant_type: 'authorization_code',
       code,
     },

@@ -11,12 +11,13 @@ import { getGoogleToken, getUserData } from '../services/google.js';
 // const { createLoginInfoMail } = require('../helpers/createMail');
 // const { sendMail } = require('../helpers/sendMail');
 
-const { BACKEND_URL_DEV, GOOGLE_CLIENT_ID, FRONTEND_URL_DEV, BACKEND_URL_PROD, FRONTEND_URL_PROD } = process.env;
+const { BACKEND_URL_DEV, GOOGLE_CLIENT_ID, FRONTEND_URL_DEV, BACKEND_URL_PROD, FRONTEND_URL_PROD, NODE_ENV } =
+  process.env;
 
 export const googleAuth = async (_: any, res: Response) => {
   const stringifiedParams = qs.stringify({
     client_id: GOOGLE_CLIENT_ID,
-    redirect_uri: `${BACKEND_URL_PROD}/api/auth/google-redirect`,
+    redirect_uri: `${NODE_ENV === 'development' ? BACKEND_URL_DEV : BACKEND_URL_PROD}}/api/auth/google-redirect`,
     scope: ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile'].join(
       ' ',
     ),
@@ -71,7 +72,9 @@ export const googleRedirect = async (req: Request, res: Response): Promise<Respo
       const updatedUser = await User.findByIdAndUpdate(user._id, { accessToken, refreshToken }, { new: true });
       if (updatedUser) {
         return res.redirect(
-          `${FRONTEND_URL_PROD}?accessToken=${updatedUser.accessToken}&refreshToken=${updatedUser.refreshToken}`,
+          `${NODE_ENV === 'development' ? FRONTEND_URL_DEV : FRONTEND_URL_PROD}}?accessToken=${
+            updatedUser.accessToken
+          }&refreshToken=${updatedUser.refreshToken}`,
         );
       } else {
         throw new HttpError('No update user', 400);
