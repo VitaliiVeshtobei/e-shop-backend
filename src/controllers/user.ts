@@ -18,6 +18,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const { NODE_ENV, FRONTEND_URL_DEV, FRONTEND_URL_PROD } = process.env;
+
 export const newUser = async (req: Request, res: Response): Promise<Response> => {
   try {
     const verificationToken = nanoid();
@@ -71,7 +73,11 @@ export const verifyEmail = async (req: Request, res: Response): Promise<Response
     if (tokens) {
       const { accessToken, refreshToken } = tokens;
 
-      res.redirect(`${process.env.FRONTEND_URL}?accessToken=${accessToken}&refreshToken=${refreshToken}`);
+      res.redirect(
+        `${
+          NODE_ENV === 'development' ? FRONTEND_URL_DEV : FRONTEND_URL_PROD
+        }?accessToken=${accessToken}&refreshToken=${refreshToken}`,
+      );
     } else {
       throw new Error('Tokens not found');
     }
