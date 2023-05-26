@@ -72,7 +72,7 @@ export const googleRedirect = async (req: Request, res: Response): Promise<Respo
       const updatedUser = await User.findByIdAndUpdate(user._id, { accessToken, refreshToken }, { new: true });
       if (updatedUser) {
         return res.redirect(
-          `${NODE_ENV === 'development' ? FRONTEND_URL_DEV : FRONTEND_URL_PROD}}?accessToken=${
+          `${NODE_ENV === 'development' ? FRONTEND_URL_DEV : FRONTEND_URL_PROD}?accessToken=${
             updatedUser.accessToken
           }&refreshToken=${updatedUser.refreshToken}`,
         );
