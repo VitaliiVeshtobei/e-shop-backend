@@ -17,7 +17,7 @@ const { BACKEND_URL_DEV, GOOGLE_CLIENT_ID, FRONTEND_URL_DEV, BACKEND_URL_PROD, F
 export const googleAuth = async (_: any, res: Response) => {
   const stringifiedParams = qs.stringify({
     client_id: GOOGLE_CLIENT_ID,
-    redirect_uri: `${NODE_ENV === 'development' ? BACKEND_URL_DEV : BACKEND_URL_PROD}}/api/auth/google-redirect`,
+    redirect_uri: `${NODE_ENV === 'development' ? BACKEND_URL_DEV : BACKEND_URL_PROD}/api/auth/google-redirect`,
     scope: ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile'].join(
       ' ',
     ),
