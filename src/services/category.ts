@@ -6,6 +6,14 @@ interface iCategory {
   name: string;
 }
 
+export const getCategoriesService = async () => {
+  try {
+    const categories = await Category.find();
+    return categories;
+  } catch (error: unknown | any) {
+    throw new HttpError(error.message, 404);
+  }
+};
 export const addCategoryService = async (data: iCategory) => {
   try {
     const category = await Category.create(data);

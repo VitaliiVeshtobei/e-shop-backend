@@ -1,6 +1,20 @@
 import { Request, Response } from 'express';
-import { addCategoryService, deleteCategoryService, updateCategoryService } from '../services/category.js';
+import {
+  getCategoriesService,
+  addCategoryService,
+  deleteCategoryService,
+  updateCategoryService,
+} from '../services/category.js';
 
+export const getCategories = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const categories = await getCategoriesService();
+
+    return res.status(201).json({ categories });
+  } catch (err: any) {
+    return res.status(err.code).json({ message: err.message });
+  }
+};
 export const newCategory = async (req: Request, res: Response): Promise<Response> => {
   try {
     const category = await addCategoryService(req.body);
