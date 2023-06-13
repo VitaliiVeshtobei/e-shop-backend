@@ -1,6 +1,20 @@
 import { Request, Response } from 'express';
-import { addProductService, deleteProductService, updateProductService } from '../services/product.js';
+import {
+  addProductService,
+  deleteProductService,
+  getProductsService,
+  updateProductService,
+} from '../services/product.js';
 
+export const getProducts = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const products = await getProductsService();
+
+    return res.status(200).json({ products });
+  } catch (err: any) {
+    return res.status(err.code || 500).json({ message: err.message });
+  }
+};
 export const newProduct = async (req: Request, res: Response): Promise<Response> => {
   try {
     const product = await addProductService(req.body);

@@ -15,6 +15,14 @@ interface iProduct {
   quantity_in_stock: number;
   category: mongoose.ObjectId;
 }
+export const getProductsService = async () => {
+  try {
+    const products = await Product.find();
+    return products;
+  } catch (error: unknown | any) {
+    throw new HttpError(error.message, 404);
+  }
+};
 export const addProductService = async (data: iProduct) => {
   try {
     const product = await Product.create(data);
