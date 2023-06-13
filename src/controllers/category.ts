@@ -6,16 +6,11 @@ import {
   deleteCategoryService,
   updateCategoryService,
 } from '../services/category.js';
-import { uploadPhoto } from '../utils/uploadPhoto.js';
-import { getPhotoUrl } from '../utils/getPhotoUrl.js';
 
 export const getCategories = async (req: Request, res: Response): Promise<Response> => {
   try {
     const categories = await getCategoriesService();
-    for (const category of categories) {
-      const urlPhoto = await getPhotoUrl(category.image);
-      category.image = urlPhoto;
-    }
+
     return res.status(201).json({ categories });
   } catch (err: any) {
     return res.status(400).json({ message: err.message });
@@ -23,11 +18,7 @@ export const getCategories = async (req: Request, res: Response): Promise<Respon
 };
 export const newCategory = async (req: Request, res: Response): Promise<Response> => {
   try {
-    console.log(req.body);
-    console.log(req.file);
-    const namePhoto = await uploadPhoto(req.file);
-    const data = { ...req.body, image: namePhoto };
-    const category = await addCategoryService(data);
+    const category = await addCategoryService(req);
 
     return res.status(201).json({ category });
   } catch (err: any) {
@@ -38,13 +29,11 @@ export const newCategory = async (req: Request, res: Response): Promise<Response
 
 export const deleteCategory = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { id } = req.params;
+    const category = await deleteCategoryService(req.body);
 
-    const product = await deleteCategoryService(id);
-
-    return res.status(200).json({ product });
+    return res.status(200).json({ category });
   } catch (error: any) {
-    return res.status(error.code).json({ message: error.message });
+    return res.status(error.code || 400).json({ message: error.message });
   }
 };
 

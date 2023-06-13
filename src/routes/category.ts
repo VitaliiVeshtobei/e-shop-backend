@@ -10,5 +10,5 @@ const upload = multer({ storage: storage });
 
 categoryRouter.get('/get', tryCatchWrapper(getCategories));
 categoryRouter.post('/create', upload.single('photo'), tryCatchWrapper(newCategory));
-categoryRouter.delete('/delete/:id', tryCatchWrapper(deleteCategory));
+categoryRouter.delete('/delete', tryCatchWrapper(deleteCategory));
 categoryRouter.patch('/update/:id', tryCatchWrapper(updateCategory));
