@@ -5,6 +5,7 @@ import { productRouter } from './routes/products.js';
 import { categoryRouter } from './routes/category.js';
 import { userRouter } from './routes/user.js';
 import { authGoogleRouter } from './routes/google.js';
+import { ordersRouter } from './routes/orders.js';
 export const app = express();
 
 app.use(cors());
@@ -21,6 +22,7 @@ app.get('/healthz', (req, res) => {
 app.use(express.json());
 app.use('/api/product', productRouter);
 app.use('/api/category', categoryRouter);
+app.use('/api/orders', ordersRouter);
 app.use('/api/user', userRouter);
 app.use('/api/auth', authGoogleRouter);
 
