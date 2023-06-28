@@ -21,6 +21,20 @@ export const getCategoriesService = async () => {
   }
 };
 
+export const getCategoryByIdService = async (id: string) => {
+  try {
+    const category = await Category.findById(id);
+    if (category) {
+      const urlPhoto = await getPhotoUrl(category.image);
+      category.image = urlPhoto;
+    }
+
+    return category;
+  } catch (error: unknown | any) {
+    throw new HttpError(error.message, 404);
+  }
+};
+
 export const addCategoryService = async (req: Request) => {
   try {
     const namePhoto = await uploadPhoto(req.file);
@@ -48,11 +62,24 @@ export const deleteCategoryService = async (ids: []) => {
   }
 };
 
-export const updateCategoryService = async (id: string, body: iCategory) => {
+export const updateCategoryService = async (id: string, body: iCategory, file: Express.Multer.File | undefined) => {
   try {
-    const changedCategory = await Category.findByIdAndUpdate(id, body, {
+    if (!file) {
+      const changedCategory = await Category.findByIdAndUpdate(id, body, {
+        new: true,
+      });
+      return changedCategory;
+    }
+
+    const category = await Category.find({ _id: id });
+
+    await deletePhoto(category);
+    const namePhoto = await uploadPhoto(file);
+    const bodyData = { ...body, image: namePhoto };
+    const changedCategory = await Category.findByIdAndUpdate(id, bodyData, {
       new: true,
     });
+
     return changedCategory;
   } catch (error: any) {
     throw new HttpError(error.message, 404);
