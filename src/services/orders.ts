@@ -11,3 +11,13 @@ export const addOrderService = async (req: Request) => {
     throw new HttpError(error.message, 404);
   }
 };
+
+export const getOrdersService = async () => {
+  try {
+    const orders = await Order.find();
+
+    return orders;
+  } catch (error: unknown | any) {
+    throw new HttpError(error.message, 404);
+  }
+};
