@@ -60,7 +60,7 @@ export const googleRedirect = async (req: Request, res: Response): Promise<Respo
         verificationToken: 'null',
         name,
         lastName,
-        phone: '+380777777777',
+        phone: null,
       });
 
       // const mail = createLoginInfoMail(email, createdPassword);

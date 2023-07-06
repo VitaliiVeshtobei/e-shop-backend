@@ -12,9 +12,9 @@ const userSchema = new Schema(
       default: '',
     },
     phone: {
-      type: String,
+      type: String || null,
       match: [/^\+380\d{9}$/, 'Phone number must be in Ukrainian format: +380XXXXXXXXX'],
-      required: true,
+      // required: [true, 'Phone is required'],
       default: '',
     },
     password: {
@@ -22,9 +22,9 @@ const userSchema = new Schema(
       required: [true, 'Password is required'],
     },
     email: {
-      type: String,
-      required: [true, 'Email is required'],
-      unique: true,
+      type: String || null,
+      // required: [true, 'Email is required'],
+      // unique: true,
       match: [/.+@.+/, 'user email is not valid'],
     },
     role: {

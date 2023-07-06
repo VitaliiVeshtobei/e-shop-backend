@@ -13,12 +13,30 @@ interface iUser {
   phone: number;
   password: string;
   email: string;
+  verificationToken: number;
 }
 export const addUserService = async (data: iUser) => {
   try {
     const salt = await bcryptjs.genSalt();
     const hashedPassword = await bcryptjs.hash(data.password, salt);
-
+    const userWithPhone = await User.findOne({ phone: data.phone });
+    const userWithEmail = await User.findOne({ email: data.email });
+    if (userWithEmail) {
+      throw new HttpError('email is already used', 400);
+    }
+    if (userWithPhone && userWithPhone.verify) {
+      throw new HttpError('phone is already used', 400);
+    }
+    if (userWithPhone && !userWithPhone.verify) {
+      const updateUser = User.findByIdAndUpdate(userWithPhone._id, {
+        name: data.name,
+        lastName: data.lastName,
+        email: data.email,
+        password: hashedPassword,
+        verificationToken: data.verificationToken,
+      });
+      return updateUser;
+    }
     const user = await User.create({ ...data, password: hashedPassword });
 
     return user;
