@@ -65,3 +65,19 @@ export const getOrderByIdService = async (id: string) => {
     throw new HttpError(error.message, 404);
   }
 };
+
+export const updateStatusOrderService = async (id: string, body: { status: string }) => {
+  const validStatuses = ['NEW', 'PROCESS', 'CANCELED', 'SENT'];
+  try {
+    if (!validStatuses.includes(body.status)) {
+      throw new HttpError('No correct status', 404);
+    }
+    const changedOrder = await Order.findByIdAndUpdate(id, body, {
+      new: true,
+    });
+
+    return changedOrder;
+  } catch (error: any) {
+    throw new HttpError(error.message, 404);
+  }
+};

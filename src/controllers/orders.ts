@@ -1,5 +1,10 @@
 import { Request, Response } from 'express';
-import { addOrderService, getOrderByIdService, getOrdersService } from '../services/orders.js';
+import {
+  addOrderService,
+  getOrderByIdService,
+  getOrdersService,
+  updateStatusOrderService,
+} from '../services/orders.js';
 
 export const newOrder = async (req: Request, res: Response): Promise<Response> => {
   try {
@@ -30,5 +35,22 @@ export const getOrderById = async (req: Request, res: Response): Promise<Respons
     return res.status(201).json({ order });
   } catch (err: any) {
     return res.status(400).json({ message: err.message });
+  }
+};
+
+export const updateStatusOrder = async (req: Request, res: Response): Promise<Response> => {
+  try {
+    const { id } = req.params;
+    const body = req.body;
+
+    const changedOrder = await updateStatusOrderService(id, body);
+
+    if (!changedOrder) {
+      return res.status(404).json({ message: 'Not found' });
+    }
+
+    return res.status(200).json({ changedOrder, message: 'success response' });
+  } catch (error: any) {
+    return res.status(error.code).json({ message: error.message });
   }
 };
