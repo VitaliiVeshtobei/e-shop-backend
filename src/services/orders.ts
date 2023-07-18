@@ -7,12 +7,17 @@ import { Order } from '../scheme/order.js';
 import { User } from '../scheme/user.js';
 
 export const addOrderService = async (req: Request) => {
-  const uniqueNumber = Math.random() * 100 + Date.now();
+  const latestOrder = await Order.findOne({}, {}, { sort: { number: -1 } });
+
   try {
     const userWithPhone = await User.findOne({ phone: req.body.phone });
 
     if (userWithPhone) {
-      const order = await Order.create({ ...req.body, user: userWithPhone._id, number: uniqueNumber });
+      if (latestOrder) {
+        const order = await Order.create({ ...req.body, user: userWithPhone._id, number: latestOrder.number + 1 });
+        return order;
+      }
+      const order = await Order.create({ ...req.body, user: userWithPhone._id, number: 1000 });
       return order;
     }
     const createdPassword = nanoid(8);
@@ -28,8 +33,13 @@ export const addOrderService = async (req: Request) => {
       phone: req.body.phone,
     };
 
+    if (latestOrder) {
+      const newUser = await User.create(newUserData);
+      const order = await Order.create({ ...req.body, user: newUser._id, number: latestOrder.number + 1 });
+      return order;
+    }
     const newUser = await User.create(newUserData);
-    const order = await Order.create({ ...req.body, user: newUser._id, number: uniqueNumber });
+    const order = await Order.create({ ...req.body, user: newUser._id, number: 1000 });
     return order;
   } catch (error: unknown | any) {
     throw new HttpError(error.message, 404);
@@ -38,7 +48,7 @@ export const addOrderService = async (req: Request) => {
 
 export const getOrdersService = async () => {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find({}, {}, { sort: { number: -1 } });
 
     return orders;
   } catch (error: unknown | any) {
