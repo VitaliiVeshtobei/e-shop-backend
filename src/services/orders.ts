@@ -55,3 +55,13 @@ export const getOrdersService = async () => {
     throw new HttpError(error.message, 404);
   }
 };
+
+export const getOrderByIdService = async (id: string) => {
+  try {
+    const order = await Order.findById(id);
+
+    return order;
+  } catch (error: unknown | any) {
+    throw new HttpError(error.message, 404);
+  }
+};
