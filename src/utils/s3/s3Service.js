@@ -45,7 +45,6 @@ export const uploadPhoto = async (file) => {
   const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex');
 
   const randomName = randomImageName();
-
   const params = {
     Bucket: awsBucketName,
     Key: randomName,

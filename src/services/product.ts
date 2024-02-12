@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import { Product } from '../scheme/product.js';
 import { HttpError } from '../httpError/Error.js';
+import { uploadPhoto } from '../utils/s3/s3Service.js';
+import { Request } from 'express';
 
 interface iProduct {
   available: boolean;
@@ -23,8 +25,16 @@ export const getProductsService = async () => {
     throw new HttpError(error.message, 404);
   }
 };
-export const addProductService = async (data: iProduct) => {
+export const addProductService = async (req: Request) => {
   try {
+    const images = [];
+    if (Array.isArray(req.files)) {
+      for (const file of req.files) {
+        const namePhoto = await uploadPhoto(file);
+        images.push(namePhoto);
+      }
+    }
+    const data = { ...req.body, images };
     const product = await Product.create(data);
     return product;
   } catch (error: unknown | any) {

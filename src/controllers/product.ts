@@ -17,8 +17,7 @@ export const getProducts = async (req: Request, res: Response): Promise<Response
 };
 export const newProduct = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const product = await addProductService(req.body);
-
+    const product = await addProductService(req);
     return res.status(201).json({ product });
   } catch (err: any) {
     return res.status(err.code || 500).json({ message: err.message });
